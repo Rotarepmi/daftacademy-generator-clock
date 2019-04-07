@@ -29,18 +29,6 @@ module.exports = {
             presets: ["@babel/preset-env"]
           }
         }
-      },
-      {
-        test: /\.s(a|c)ss$/,
-        use: [
-          isProduction
-            ? MiniCssExtractPlugin.loader
-            : { loader: "style-loader", options: { sourceMap: !isProduction } },
-          { loader: "css-loader", options: { sourceMap: !isProduction } },
-          { loader: "postcss-loader", options: { sourceMap: !isProduction } },
-          { loader: 'resolve-url-loader', options: { sourceMap: !isProduction } },
-          { loader: "sass-loader", options: { sourceMap: !isProduction } }
-        ]
       }
     ]
   },
