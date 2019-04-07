@@ -2,11 +2,15 @@
   "name": "daftacademy-generator-clock",
   "version": "1.0.0",
   "author": "Jakub Mandra",
-  "homepage": "https://github.com/Rotarepmi/daftacademy-generator-clock#readme",
+  "homepage": "https://rotarepmi.github.io/daftacademy-generator-clock/",
   "license": "ISC",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -r dist && webpack --config webpack.config.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "start": "webpack-dev-server --open"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
