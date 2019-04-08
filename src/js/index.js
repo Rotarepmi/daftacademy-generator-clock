@@ -1,48 +1,39 @@
-function* generate(start = 0) {
+function* generate(start = 0, threshold = 59) {
   while (true) {
     const curr = start++;
-    const reset = yield curr;
-    if (reset) start = 0;
+    yield curr;
+    if (curr === threshold) start = 0;
   }
 }
 
+// padStart - the ES2017 function which fulfills strings
 function pad(num) {
   return num.toString().padStart(2, '0');
 }
 
-(function init() {
+(function clock() {
   const hCont = document.querySelector('#h');
   const mCont = document.querySelector('#m');
   const sCont = document.querySelector('#s');
   const inForm = document.querySelector('#inForm');
 
   const currTime = new Date();
-  let s = currTime.getSeconds();
-  let m = currTime.getMinutes();
-  let h = currTime.getHours();
+  const sGen = generate(currTime.getSeconds());
+  const mGen = generate(currTime.getMinutes());
+  const hGen = generate(currTime.getHours() % 12, 11);
 
-  const gen = generate(s);
+  // first generation gives default value
+  let s = sGen.next().value;
+  let m = mGen.next().value;
+  let h = hGen.next().value;
 
   let clockInterval = this.setInterval(runClock, inForm.querySelector('input').value);
 
+  // higher digit changes before lower reaches 60
   function runClock() {
-    if (s !== 59) {
-      s = gen.next().value;
-    }
-    else {
-      m += 1;
-
-      if (m === 60) {
-        m = 0;
-        h += 1;
-
-        if (h === 12) {
-          h = 0;
-        }
-      }
-
-      s = gen.next(true).value;
-    }
+    if (m === 59 && s === 59) h = hGen.next().value;
+    if (s === 59) m = mGen.next().value;
+    s = sGen.next().value;
 
     hCont.innerHTML = pad(h);
     mCont.innerHTML = pad(m);
