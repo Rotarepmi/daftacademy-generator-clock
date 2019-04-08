@@ -7,7 +7,7 @@ const buildDir = path.resolve(__dirname, "dist");
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: ["@babel/polyfill", "./src/index.js"],
+  entry: ["@babel/polyfill", "./src/js/index.js"],
   output: {
     filename: "main.js",
     path: buildDir
@@ -33,6 +33,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      template: "src/index.html",
       title: "DaftClock"
     })
   ],
