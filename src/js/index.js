@@ -1,53 +1,58 @@
-function* generate(start = 0, threshold = 59) {
-  while (true) {
-    const curr = start++;
-    yield curr;
-    if (curr === threshold) start = 0;
+class Clock {
+  constructor(currTime) {
+    this.sGen = this.generate(currTime.getSeconds());
+    this.mGen = this.generate(currTime.getMinutes());
+    this.hGen = this.generate(currTime.getHours() % 12, 11);
+
+    this.s = this.sGen.next().value;
+    this.m = this.mGen.next().value;
+    this.h = this.hGen.next().value;
+  }
+
+  runClock() {
+    if (this.m === 59 && this.s === 59) this.h = this.hGen.next().value;
+    if (this.s === 59) this.m = this.mGen.next().value;
+    this.s = this.sGen.next().value;
+  }
+
+  pad(num) {
+    return num.toString().padStart(2, '0');  // padStart - the ES2017 function which fulfills strings
+  }
+
+  *generate(start = 0, threshold = 59) {
+    while (true) {
+      const curr = start++;
+      yield curr;
+      if (curr === threshold) start = 0;
+    }
   }
 }
 
-// padStart - the ES2017 function which fulfills strings
-function pad(num) {
-  return num.toString().padStart(2, '0');
-}
-
-(function clock() {
+(function run() {
   const hCont = document.querySelector('#h');
   const mCont = document.querySelector('#m');
   const sCont = document.querySelector('#s');
   const inForm = document.querySelector('#inForm');
+  const inInput = inForm.querySelector('input');
 
-  const currTime = new Date();
-  const sGen = generate(currTime.getSeconds());
-  const mGen = generate(currTime.getMinutes());
-  const hGen = generate(currTime.getHours() % 12, 11);
+  const clock = new Clock(new Date());
 
-  // first generation gives default value
-  let s = sGen.next().value;
-  let m = mGen.next().value;
-  let h = hGen.next().value;
-
-  let clockInterval = this.setInterval(runClock, inForm.querySelector('input').value);
-
-  // higher digit changes before lower reaches 60
   function runClock() {
-    if (m === 59 && s === 59) h = hGen.next().value;
-    if (s === 59) m = mGen.next().value;
-    s = sGen.next().value;
+    clock.runClock();
 
-    hCont.innerHTML = pad(h);
-    mCont.innerHTML = pad(m);
-    sCont.innerHTML = pad(s);
+    hCont.innerHTML = clock.pad(clock.h);
+    mCont.innerHTML = clock.pad(clock.m);
+    sCont.innerHTML = clock.pad(clock.s);
   }
 
-  const updateClock = (e) => {
+  let clockInterval = this.setInterval(runClock, inInput.value);
+
+  inForm.onsubmit = updateInterval = (e) => {
     e.preventDefault();
 
     clearInterval(clockInterval);
-    clockInterval = this.setInterval(runClock, inForm.querySelector('input').value);
+    clockInterval = this.setInterval(runClock, inInput.value);
   }
-
-  inForm.onsubmit = updateClock;
 })();
 
 
