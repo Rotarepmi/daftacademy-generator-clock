@@ -1,3 +1,5 @@
+import '../css/style.css';
+
 class Clock {
   constructor(currTime) {
     this.sGen = this.generate(currTime.getSeconds());
@@ -45,13 +47,13 @@ class Clock {
     sCont.innerHTML = clock.pad(clock.s);
   }
 
-  let clockInterval = this.setInterval(runClock, inInput.value);
+  let clockInterval = window.setInterval(runClock, inInput.value);
 
-  inForm.onsubmit = updateInterval = (e) => {
+  inForm.onsubmit = (e) => {
     e.preventDefault();
 
     clearInterval(clockInterval);
-    clockInterval = this.setInterval(runClock, inInput.value);
+    clockInterval = window.setInterval(runClock, inInput.value);
   }
 })();
 
